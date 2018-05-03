@@ -1,0 +1,34 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+    {{ block.super }}
+    <div id="capture" class="ticket">
+        <h2>{{ object.raffle }}<br><small>{{ object.raffle.observation }}</small></h2>
+        <h1 class="{% if not object.is_paid %} reserva {% endif %}">
+            <strong>{% if object.is_paid %}Bilhete{% else %}Reserva{% endif %} {{ object }}</strong>
+            <img src="{% static "img/logo.png" %}" style="height: 4rem">
+        </h1>
+        <h3>{{ object.client }}</h3>
+    </div>
+
+    <style>
+        .ticket {
+            background: white;
+            border-radius: 5px;
+            border: solid 5px purple;
+            padding: 15px;
+            display: inline-block;
+            text-align: center;
+        }
+        .ticket>h1 {
+            color: purple;
+        }
+        .reserva {
+            color: red !important;
+        }
+        .ticket>h2,h3 {
+            color: black;
+        }
+    </style>
+{% endblock %}

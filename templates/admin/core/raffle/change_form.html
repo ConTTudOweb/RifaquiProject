@@ -1,0 +1,47 @@
+{% extends "admin/change_form.html" %}
+
+{% block after_field_sets %}
+    <table class="table" id="numbers">
+        <thead>
+            <tr>
+                <td>
+                    <pre>{{ original }} - {{ original.price }}  |  {{ original.reserved }} / {{ original.numbers }}  |  </pre>
+                    <span class="reservado">Reservado</span> | <span class="pago">Pago</span> | <span>Disponível</span>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            {% for number in original.ticket_set.all %}
+                <td class="number {% if number.is_paid %} pago {% elif number.client %} reservado {% endif %}">
+                    <strong>{{ number }}</strong>
+                </td>
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <style>
+        #numbers {
+            width: 100%;
+            height: auto;
+            text-align: center;
+        }
+
+        .number {
+            width: 3rem;
+            height: 3rem;
+            border: 1px solid #000;
+            margin: 5px;
+            float: left;
+        }
+
+        .reservado {
+            background: lightgoldenrodyellow;
+        }
+
+        .pago {
+            background: lightcoral;
+        }
+    </style>
+{% endblock %}
