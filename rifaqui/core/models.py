@@ -65,3 +65,5 @@ class Ticket(models.Model):
     class Meta:
         unique_together = (("raffle", "number"),)
         ordering = ('number',)
+        verbose_name = 'bilhete'
+        verbose_name_plural = 'bilhetes'
