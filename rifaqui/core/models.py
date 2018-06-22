@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils.timezone import now, localdate
 
 
 class Client(models.Model):
@@ -26,6 +27,10 @@ class Raffle(models.Model):
     @property
     def reserved(self):
         return self.ticket_set.filter(client__isnull=False).count()
+
+    @staticmethod
+    def ticket_caption():
+        return Ticket._meta.verbose_name
 
     def __str__(self):
         return "#" + str(self.id) + "-Rifa " + self.description
@@ -67,3 +72,10 @@ class Ticket(models.Model):
         ordering = ('number',)
         verbose_name = 'bilhete'
         verbose_name_plural = 'bilhetes'
+
+
+@receiver(post_save, sender=Ticket)
+def ticket_post_save(sender, instance, created, **kwargs):
+    if instance.client is not None and instance.booking_date is None:
+        instance.booking_date = localdate()
+        instance.save()

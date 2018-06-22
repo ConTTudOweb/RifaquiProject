@@ -1,6 +1,7 @@
 from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
 
+from rifaqui.core.mixins import ViewOnSiteMixin
 from .models import *
 
 
@@ -22,15 +23,15 @@ class RaffleModelAdmin(admin.ModelAdmin):
         else:
             return []
 
-    class TicketInlineModelAdmin(admin.TabularInline):
-        model = Ticket
-        extra = 0
-        autocomplete_fields = ('client',)
-    inlines = [TicketInlineModelAdmin]
+    # class TicketInlineModelAdmin(admin.TabularInline):
+    #     model = Ticket
+    #     extra = 0
+    #     autocomplete_fields = ('client',)
+    # inlines = [TicketInlineModelAdmin]
 
 
 @admin.register(Ticket)
-class TicketModelAdmin(admin.ModelAdmin):
+class TicketModelAdmin(ViewOnSiteMixin, admin.ModelAdmin):
     class RaffleFilter(SimpleListFilter):
         title = Raffle._meta.verbose_name
         parameter_name = 'raffle'
@@ -46,5 +47,8 @@ class TicketModelAdmin(admin.ModelAdmin):
                 messages.add_message(request, messages.WARNING, 'Escolha uma '+self.title)
                 return queryset.filter(raffle__id__exact=0)
 
-    list_display = ('raffle', 'client', 'booking_date', 'is_paid', 'number')
+    list_display = ('number', 'client', 'booking_date', 'is_paid', 'view_on_site')
     list_filter = (RaffleFilter, 'is_paid')
+    list_editable = ('client', 'booking_date', 'is_paid')
+    autocomplete_fields = ('client',)
+    save_on_top = True

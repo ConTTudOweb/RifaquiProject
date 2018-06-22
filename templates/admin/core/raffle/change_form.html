@@ -1,8 +1,9 @@
 {% extends "admin/change_form.html" %}
 
 {% block after_field_sets %}
-    <table class="table" id="numbers">
+    <table class="table hidden" id="numbers">
         <thead>
+            <h2><a href="javascript:toogleGrafico();">Gráfico</a></h2>
             <tr>
                 <td>
                     <pre>{{ original }} - {{ original.price }}  |  {{ original.reserved }} / {{ original.numbers }}  |  </pre>
@@ -20,6 +21,8 @@
             </tr>
         </tbody>
     </table>
+
+    <h2><a href="{% url 'admin:core_ticket_changelist' %}?raffle={{ original.id }}">{{ original.ticket_caption|capfirst }}</a></h2>
 
     <style>
         #numbers {
@@ -44,4 +47,11 @@
             background: lightcoral;
         }
     </style>
+
+    <script type="text/javascript">
+        function toogleGrafico() {
+            var element = document.getElementById("numbers");
+            element.classList.toggle("hidden");
+        }
+    </script>
 {% endblock %}
