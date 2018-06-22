@@ -1,12 +1,16 @@
+from decimal import Decimal
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
-from django.utils.timezone import now, localdate
+from django.utils.timezone import localdate
 
 
 class Client(models.Model):
     name = models.CharField('nome', max_length=120)
+    email = models.EmailField('e-mail', max_length=255, null=True, blank=True)
+    phone = models.CharField('telefone', max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -21,7 +25,8 @@ class Raffle(models.Model):
     numbers = models.PositiveIntegerField('números')
     initial_number = models.IntegerField('número inicial', default=0)
     observation = models.TextField('observação', null=True, blank=True)
-    price = models.DecimalField('preço', max_digits=15, decimal_places=2, default=0)
+    price = models.DecimalField('preço', max_digits=15, decimal_places=2, default=0,
+                                validators=[MinValueValidator(Decimal('0.00'))])
     draw_date = models.DateField('data do sorteio', blank=True, null=True)
 
     @property
@@ -50,7 +55,7 @@ def generate_raffle_tickets(sender, instance, created, **kwargs):
 
 
 class Ticket(models.Model):
-    raffle = models.ForeignKey('Raffle', on_delete=models.PROTECT, verbose_name=Raffle._meta.verbose_name)
+    raffle = models.ForeignKey('Raffle', on_delete=models.CASCADE, verbose_name=Raffle._meta.verbose_name)
     number = models.IntegerField('número', editable=False)
     client = models.ForeignKey('Client', on_delete=models.PROTECT, verbose_name=Client._meta.verbose_name, null=True,
                                blank=True)

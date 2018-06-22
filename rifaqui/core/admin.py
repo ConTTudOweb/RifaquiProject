@@ -1,6 +1,7 @@
 from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
 
+from rifaqui.core.forms import RaffleModelForm
 from rifaqui.core.mixins import ViewOnSiteMixin
 from .models import *
 
@@ -13,6 +14,7 @@ class ClientModelAdmin(admin.ModelAdmin):
 
 @admin.register(Raffle)
 class RaffleModelAdmin(admin.ModelAdmin):
+    form = RaffleModelForm
     search_fields = ('description',)
     list_display = ('description', 'numbers', 'initial_number')
     save_on_top = True
@@ -52,3 +54,6 @@ class TicketModelAdmin(ViewOnSiteMixin, admin.ModelAdmin):
     list_editable = ('client', 'booking_date', 'is_paid')
     autocomplete_fields = ('client',)
     save_on_top = True
+
+    def has_add_permission(self, request):
+        return False
